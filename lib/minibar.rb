@@ -2,22 +2,55 @@ require 'rspec'
 require 'rspec/core/formatters/base_text_formatter'
 require 'ruby-progressbar'
 
-RSpec.configuration.add_setting :fuubar_progress_bar_options, default: {}
+RSpec.configuration.add_setting :minibar_progress_bar_options, default: {}
 
-class Fuubar < RSpec::Core::Formatters::BaseTextFormatter
-  DEFAULT_PROGRESS_BAR_OPTIONS = { format: ' %c/%C |%w>%i| %e ' }
+class Minibar < RSpec::Core::Formatters::BaseTextFormatter
+  DEFAULT_PROGRESS_BAR_OPTIONS = { format: ' %c/%C |%w>%i| %e' }
+  DEFAULT_MAX_SHOWN_FAILED_SPECS = 5
 
   RSpec::Core::Formatters.register self,  :start,
                                    :message,
                                    :example_passed,
                                    :example_pending,
                                    :example_failed,
-                                   :dump_failures
+                                   :dump_failures,
+                                   :stop,
+                                   :start_dump,
+                                   :dump_failures,
+                                   :dump_summary,
+                                   :close,
+                                   :seed
 
   attr_accessor :progress,
                 :passed_count,
                 :pending_count,
                 :failed_count
+
+  def stop(notifications)
+    if self.failed_count > DEFAULT_MAX_SHOWN_FAILED_SPECS
+      output.puts "... +#{self.failed_count - DEFAULT_MAX_SHOWN_FAILED_SPECS} more failed specs"
+    end
+  end
+
+  def dump_failures(notifications)
+    # noop
+  end
+
+  def start_dump(notifications)
+    # noop
+  end
+
+  def dump_summary(notifications)
+    # noop
+  end
+
+  def close(notifications)
+    # noop
+  end
+
+  def seed(notification)
+    # noop
+  end
 
   def initialize(*args)
     super
@@ -33,7 +66,7 @@ class Fuubar < RSpec::Core::Formatters::BaseTextFormatter
   def start(notification)
     progress_bar_options =  DEFAULT_PROGRESS_BAR_OPTIONS.
                               merge(throttle_rate: continuous_integration? ? 1.0 : nil).
-                              merge(configuration.fuubar_progress_bar_options).
+                              merge(configuration.minibar_progress_bar_options).
                               merge(total:     notification.count,
                                     output:    output,
                                     autostart: false)
@@ -62,20 +95,21 @@ class Fuubar < RSpec::Core::Formatters::BaseTextFormatter
 
   def example_failed(notification)
     self.failed_count += 1
-
     progress.clear
 
-    output.puts notification.fully_formatted(failed_count)
-    output.puts
+    if self.failed_count <= DEFAULT_MAX_SHOWN_FAILED_SPECS
+      cleaned_exception = notification.exception.to_s.gsub(/\s+/, ' ').strip
+      output.puts "#{self.failed_count}: #{cleaned_exception} in #{notification.colorized_formatted_backtrace.first}"
+    end
 
     increment
   end
 
   def message(notification)
     if progress.respond_to? :log
-      progress.log(notification.message)
+      #progress.log(notification.message)
     else
-      super
+      #super
     end
   end
 
