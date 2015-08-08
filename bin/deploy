@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-gem_name="fuubar"
+gem_name="minibar"
 current_sha="$(git rev-parse HEAD)"
 
 function chamber_env_var {

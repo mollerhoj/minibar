@@ -3,17 +3,17 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |s|
-  s.name                  = 'fuubar'
+  s.name                  = 'minibar'
 
-  s.version               = '2.0.0'
+  s.version               = '1.0.0'
 
-  s.authors               = ['Nicholas Evans', 'Jeff Kreeftmeijer', 'jfelchner']
+  s.authors               = ['Jens Mollerhoj']
   s.email                 = ['jeff@kreeftmeijer.nl']
-  s.homepage              = 'https://github.com/jeffkreeftmeijer/fuubar'
+  s.homepage              = 'https://github.com/mollerhoj/minibar'
 
   s.license               = 'MIT'
-  s.summary               = 'the instafailing RSpec progress bar formatter'
-  s.description           = 'the instafailing RSpec progress bar formatter'
+  s.summary               = ''
+  s.description           = 'forked from fuubar by: Nicholas Evans, Jeff Kreeftmeijer and jfelchner'
 
   s.rdoc_options          = ['--charset', 'UTF-8']
   s.extra_rdoc_files      = %w[README.md LICENSE]
